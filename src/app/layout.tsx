@@ -4,7 +4,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Children } from "react";
+import React, {Fragment} from "react";
+
 
 
 
@@ -18,13 +20,13 @@ const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 
 }>) {
-  const [cart, setcart] = useState({})
-  const [subtotal, setsubtotal] = useState(0)
+  const [cart, setcart] = useState<any>({})
+  const [subtotal, setsubtotal] = useState<number>(0)
   
   useEffect(() => {
     console.log("hello bro")
@@ -40,11 +42,17 @@ export default function RootLayout({
     
     
   }, [])
-  const savecart=(mycart)=>{
+  const savecart = (mycart: any): void => {
     localStorage.setItem("cart", mycart)
-    
+    let subt = 0
+    const keys = Object.keys(cart)
+    for (let i = 0; i < keys.length; i++) {
+      subt += mycart[keys[i]].price * mycart[keys[i]].qty
+    }
+    setsubtotal(subt)
+
   }
-  const addtocart = (itemid: number, qty: number, price: number, name: string, size: string, varient: string) => {
+  const addtocart = (itemid: number, qty: number, price: number, name: string, size: string, varient: string): void => {
     let newcart = cart
     if (itemid in cart) {
       newcart[itemid].qty = cart[itemid].qty + qty
@@ -55,20 +63,21 @@ export default function RootLayout({
     setcart(newcart)
     savecart(newcart)
   }
-  const removetocart = (itemid: number, qty: number, price: number, name: string, size: string, varient: string) => {
+  const removetocart = (itemid: number, qty: number, price: number, name: string, size: string, varient: string): void => {
     let newcart = cart
     if (itemid in cart) {
       newcart[itemid].qty = cart[itemid].qty + qty
     }
-   if(newcart[itemid]["qty"]<=0){
-    delete newcart[itemid]
-   }
+    if (newcart[itemid]["qty"] <= 0) {
+      delete newcart[itemid]
+    }
     setcart(newcart)
     savecart(newcart)
   }
-  const clearcart=()=>{
+  const clearcart = (): void => {
     setcart({})
     savecart({})
+    console.log("clear cart")
   }
   return (
     <>
@@ -77,9 +86,12 @@ export default function RootLayout({
         {/* <Navbar/> */}
         <body className={inter.className}>
           <title>hello</title>
-          <Navbar cart={cart} addtocart={addtocart} removetocart={removetocart} clearcart={clearcart} />
+          
+          <Navbar cart={cart} addtocart={addtocart} removetocart={removetocart} clearcart={clearcart} subtotal={subtotal}/>
+          
           {children}
           <Footer />
+          
         </body>
         {/* <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"/> */}
 
