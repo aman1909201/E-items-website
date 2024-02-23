@@ -11,7 +11,6 @@ export function Appwrapper({children}:{
   const [subtotal, setsubtotal] = useState<number>(0)
   
   useEffect(() => {
-    console.log("hello bro")
     try {
       const cartData = localStorage.getItem("cart");
       if (cartData !== null) {
@@ -25,9 +24,9 @@ export function Appwrapper({children}:{
     
   }, [])
   const savecart = (mycart: any): void => {
-    localStorage.setItem("cart", mycart)
+    localStorage.setItem("cart", JSON.stringify(mycart))
     let subt = 0
-    const keys = Object.keys(cart)
+    const keys = Object.keys(mycart)
     for (let i = 0; i < keys.length; i++) {
       subt += mycart[keys[i]].price * mycart[keys[i]].qty
     }
@@ -48,7 +47,7 @@ export function Appwrapper({children}:{
   const removetocart = (itemid: number, qty: number, price: number, name: string, size: string, varient: string): void => {
     let newcart = cart
     if (itemid in cart) {
-      newcart[itemid].qty = cart[itemid].qty + qty
+      newcart[itemid].qty = cart[itemid].qty - qty
     }
     if (newcart[itemid]["qty"] <= 0) {
       delete newcart[itemid]
@@ -56,10 +55,9 @@ export function Appwrapper({children}:{
     setcart(newcart)
     savecart(newcart)
   }
-  const clearcart = (): void => {
+  const clearcart = () => {
     setcart({})
     savecart({})
-    console.log("clear cart")
   }
   return (
     <>
