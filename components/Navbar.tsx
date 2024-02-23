@@ -6,8 +6,9 @@ import { CiShoppingCart } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 import { useRef } from 'react'
 import { FaMinusCircle, FaPlusCircle } from "react-icons/fa";
+import { useAppcontext } from '@/context/layout';
 const Navbar = () => {
-  const ref = useRef<HTMLDivElement>()
+  const ref = useRef<any>()
   const togglecart = () => {
     if (ref.current) {
       if (ref.current.classList.contains('translate-x-full')) {
@@ -19,7 +20,7 @@ const Navbar = () => {
       }
     }
   }
-
+  const { cart, clearcart, removetocart, addtocart } = useAppcontext()
   return (
     <>
       <div className='flex flex-col md:flex-row md:justify-start justify-center items-center shadow-xl'>
@@ -44,40 +45,20 @@ const Navbar = () => {
         <span onClick={togglecart} className=' absolute top-2 right-2 cursor-pointer text-xl'><IoMdClose /></span>
 
         <ol className='list-decimal font-semibold'>
-          <li>
-            <div className="item flex my-3">
-            <div className='bg-pink-400 '>this is  laptop</div>
-            <div className='flex items-center justify-center w-1/3'><FaMinusCircle  className='text-red-600 text-xl mx-1'/>1<FaPlusCircle  className='text-red-600 text-xl mx-1' /></div>
-            </div>
-          </li>
-          <li>
-            <div className="item flex my-3">
-            <div className='bg-pink-400 '>this is  laptop</div>
-            <div className='flex items-center justify-center w-1/3'>1</div>
-            </div>
-          </li>
-          <li>
-            <div className="item flex my-3">
-            <div className='bg-pink-400 '>this is  laptop</div>
-            <div className='flex items-center justify-center w-1/3'>1</div>
-            </div>
-          </li>
-          <li>
-            <div className="item flex my-3">
-            <div className='bg-pink-400 '>this is  laptop</div>
-            <div className='flex items-center justify-center w-1/3'>1</div>
-            </div>
-          </li>
-          <li>
-            <div className="item flex my-3">
-            <div className='bg-pink-400 '>this is  laptop</div>
-            <div className='flex items-center justify-center w-1/3'>1</div>
-            </div>
-          </li>
+          {Object.keys(cart).length == 0 && <div className='my-4'>no items is cart</div>}
+          {Object.keys(cart).map((k) => {
+            return <li key={k}>
+              <div className="item flex my-3">
+                <div className='bg-pink-400 '>{cart[k].name}</div>
+                <div className='flex items-center justify-center w-1/3'><FaMinusCircle onClick={()=>{removetocart(k, 1, cart[k].price, cart[k].name, cart[k].size, cart[k].variant)}} className=' cursor-pointer text-red-600 text-xl mx-1' />{cart[k].qty}<FaPlusCircle onClick={()=>{addtocart(k, 1, cart[k].price, cart[k].name, cart[k].size, cart[k].variant)}}className='cursor-pointer text-red-600 text-xl mx-1' /></div>
+              </div>
+            </li>
+          })}
+
           <div className="flex">
-          <button className="flex mx-1  text-white bg-indigo-500 h-max px-2  hover:bg-indigo-600 rounded t">Checkout</button>
-          <button className="flex mx-1  text-white bg-indigo-500 h-max border-0 py-1 px-2 focus:outline-none hover:bg-indigo-600 rounded text-lg">clear cart</button>
-          </div>
+            <button className="flex mx-1  text-white bg-indigo-500 h-max px-2  hover:bg-indigo-600 rounded t">Checkout</button>
+            <button onClick={clearcart} className="flex mx-1  text-white bg-indigo-500 h-max border-0 py-1 px-2 focus:outline-none hover:bg-indigo-600 rounded text-lg">clear cart</button>
+          </div> 
         </ol>
       </div>
 
