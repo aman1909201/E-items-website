@@ -40,25 +40,24 @@ const Navbar = () => {
       </div>
 
       {/* shopping cart */}
-      <div ref={ref} className=" w-72 sidecart absolute top-0 right-0 bg-blue-400 p-9 transform transition-transform translate-x-full">
+      <div ref={ref} className={`w-72 sidecart absolute top-0 right-0 bg-blue-400 p-9 transform transition-transform ${Object.keys(cart).length !== 0 ? 'translate-x-0' : 'translate-x-full'}`}>
         <h2 className='font-bold text-xl'>shopping cart</h2>
         <span onClick={togglecart} className=' absolute top-2 right-2 cursor-pointer text-xl'><IoMdClose /></span>
-
         <ol className='list-decimal font-semibold'>
           {Object.keys(cart).length == 0 && <div className='my-4'>no items is cart</div>}
           {Object.keys(cart).map((k) => {
             return <li key={k}>
               <div className="item flex my-3">
                 <div className='bg-pink-400 '>{cart[k].name}</div>
-                <div className='flex items-center justify-center w-1/3'><FaMinusCircle onClick={()=>{removetocart(k, 1, cart[k].price, cart[k].name, cart[k].size, cart[k].variant)}} className=' cursor-pointer text-red-600 text-xl mx-1' />{cart[k].qty}<FaPlusCircle onClick={()=>{addtocart(k, 1, cart[k].price, cart[k].name, cart[k].size, cart[k].variant)}}className='cursor-pointer text-red-600 text-xl mx-1' /></div>
+                <div className='flex items-center justify-center w-1/3'><FaMinusCircle onClick={() => { removetocart(k, 1, cart[k].price, cart[k].name, cart[k].size, cart[k].variant) }} className=' cursor-pointer text-red-600 text-xl mx-1' />{cart[k].qty}<FaPlusCircle onClick={() => { addtocart(k, 1, cart[k].price, cart[k].name, cart[k].size, cart[k].variant) }} className='cursor-pointer text-red-600 text-xl mx-1' /></div>
               </div>
             </li>
           })}
 
           <div className="flex">
-            <button className="flex mx-1  text-white bg-indigo-500 h-max px-2  hover:bg-indigo-600 rounded t">Checkout</button>
+            <Link href={'/checkout'}><button className="flex mx-1  text-white bg-indigo-500 h-max px-2  hover:bg-indigo-600 rounded t">Checkout</button></Link>
             <button onClick={clearcart} className="flex mx-1  text-white bg-indigo-500 h-max border-0 py-1 px-2 focus:outline-none hover:bg-indigo-600 rounded text-lg">clear cart</button>
-          </div> 
+          </div>
         </ol>
       </div>
 
